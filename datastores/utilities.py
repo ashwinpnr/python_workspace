@@ -9,8 +9,17 @@ urllib3.disable_warnings()
 
 
 def get_es_connection(es_host, es_port, es_user, es_password, es_ssl=True, es_timeout=60):
+    """
+
+    :param es_host:
+    :param es_port:
+    :param es_user:
+    :param es_password:
+    :param es_ssl:
+    :param es_timeout:
+    :return: ES Connection
+    """
     if es_ssl:
-        print("ESConnection with SSL")
         es = Elasticsearch(es_host,
                            port=int(es_port),
                            scheme="https",
@@ -26,9 +35,18 @@ def get_es_connection(es_host, es_port, es_user, es_password, es_ssl=True, es_ti
     return es
 
 
-def get_mongodb_connection(host, port, user, password, auth):
+def get_mongodb_connection(host, port, user, password, auth = False):
+    """
+
+    :param host: Host name/ip of mongodb
+    :param port: Port of MongoDB
+    :param user: Username
+    :param password: Password
+    :param auth: Auth enabled or not
+    :return: MongoDB Connection
+    """
     try:
-        if auth == "true":
+        if auth:
             mongodb_connect_obj = MongoClient(host, port, ssl=True,
                                               ssl_cert_reqs=ssl.CERT_NONE)
             mongodb_connect_obj.the_database.authenticate(user, password,

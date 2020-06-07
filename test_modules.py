@@ -9,7 +9,7 @@ def test_mongodb_connection(config):
     port = config.getint('mongo', 'port')
     user = config.get('mongo', 'user')
     password = config.get('mongo', 'password')
-    auth = config.get('mongo', 'auth')
+    auth = config.getboolean('mongo', 'auth')
 
     mongo_connect = utilities.get_mongodb_connection(host, port, user, password, auth)
     # List MongoDB Databases
