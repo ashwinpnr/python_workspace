@@ -4,6 +4,7 @@ import ssl
 import urllib3
 import sys
 
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 urllib3.disable_warnings()
 
@@ -59,3 +60,5 @@ def get_mongodb_connection(host, port, user, password, auth = False):
     except errors.ConnectionFailure:
         print("Could not connect to MongoDB")
         sys.exit()
+
+

@@ -1,7 +1,19 @@
 import configparser
 import sys
+import uuid
+import os
 
 from datastores import utilities
+from datastores.aws import s3_utilities
+
+
+def create_temp_file(size, file_name, file_content="test"):
+    if not os.path.exists('temp'):
+        os.makedirs('temp')
+    random_file_name = "temp/" + file_name + str(uuid.uuid4().hex[:6])
+    with open(random_file_name, 'w') as f:
+        f.write(str(file_content) * size)
+    return random_file_name
 
 
 def test_mongodb_connection(config):
@@ -34,6 +46,23 @@ def test_mongodb_connection(config):
         print(str(record))
 
 
+def test_s3_module(config):
+    access_key_id = config.get('aws', 'aws_access_key_id')
+    secret_access_key = config.get('aws', 'aws_secret_access_key')
+    region_name = config.get('aws', 'aws_region')
+    s3_resource = s3_utilities.get_s3_resource(access_key_id, secret_access_key)
+
+    # create bucket
+    bucket_prefix = "test"
+    bucket_name,response = s3_utilities.create_bucket(s3_resource,bucket_prefix,region_name)
+    print(bucket_name,response)
+
+    # Create temp file and upload to bucket
+    temp_file_name = create_temp_file(300, 'temp_file')
+    s3_utilities.upload_to_bucket(s3_resource,bucket_name,temp_file_name)
+
+
+
 def main():
     config_file = "config.ini"
     if len(sys.argv) >= 2:
@@ -41,7 +70,8 @@ def main():
 
     config = configparser.ConfigParser()
     config.read(config_file)
-    test_mongodb_connection(config)
+    #test_mongodb_connection(config)
+    test_s3_module(config)
 
 
 if __name__ == '__main__':
